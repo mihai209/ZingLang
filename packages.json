@@ -4,6 +4,11 @@
       "versions": {
         "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-json/1.0.0.tar.gz"
       }
+    },
+    "zing-crypto": {
+      "versions": {
+        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-crypto/1.0.0.tar.gz"
+      }
     }
   }
 }
