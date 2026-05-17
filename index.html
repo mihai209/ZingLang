@@ -1,1 +1,84 @@
-hello
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZingLang — Un limbaj rapid, modular și nativ</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container">
+      <span class="logo">&gt;_ ZingLang</span>
+      <nav>
+        <a href="#hero">Acasă</a>
+        <a href="#code">Exemple</a>
+        <a href="#packages">Pachete</a>
+        <a href="https://github.com/mihai209/ZingLang" target="_blank">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <section id="hero" class="hero">
+    <div class="container">
+      <h1 class="hero-title">ZingLang</h1>
+      <p class="hero-subtitle">Un limbaj rapid, modular și nativ scris în Rust</p>
+      <div class="install-box">
+        <code class="install-cmd">curl -fsSL https://mihai209.github.io/ZingLang/install.sh | sh</code>
+        <button class="copy-btn" onclick="copyInstall()">Copiază</button>
+      </div>
+      <div class="hero-actions">
+        <a href="https://github.com/mihai209/ZingLang" class="btn btn-outline" target="_blank">Vezi pe GitHub</a>
+        <a href="#packages" class="btn btn-primary">Explorează pachetele</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="code" class="section code-section">
+    <div class="container">
+      <h2 class="section-title">Exemplu de cod</h2>
+      <div class="code-editor">
+        <div class="editor-header">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="filename">app.zing</span>
+        </div>
+        <pre class="editor-body"><code><span class="kw">import</span> <span class="str">"json"</span>;
+<span class="kw">import</span> <span class="str">"crypto"</span>;
+
+<span class="kw">let</span> request_json = <span class="str">"{\"user\": \"Mihai\", \"pass\": \"secret123\"}"</span>;
+<span class="fn">print</span>(<span class="str">"=== Request JSON primit ==="</span>);
+
+<span class="kw">let</span> data = <span class="mod">json</span>.<span class="fn">parse</span>(request_json);
+<span class="fn">print</span>(<span class="str">"Utilizator:"</span>, data.user);
+<span class="fn">print</span>(<span class="str">"Parola (plaintext):"</span>, data.pass);
+
+<span class="kw">let</span> hash = <span class="mod">crypto</span>.<span class="fn">hash_password</span>(data.pass);
+<span class="fn">print</span>(<span class="str">"Hash generat:"</span>, hash);
+
+<span class="kw">let</span> corecta = <span class="mod">crypto</span>.<span class="fn">verify_password</span>(data.pass, hash);
+<span class="fn">print</span>(<span class="str">"Parola potrivita?"</span>, corecta);</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="packages" class="section packages-section">
+    <div class="container">
+      <h2 class="section-title">Registry de pachete</h2>
+      <p class="section-desc">Pachetele oficiale ZingLang — instalabile cu o singură comandă.</p>
+      <div id="package-grid" class="package-grid">
+        <div class="loading">Se încarcă pachetele...</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>ZingLang — 2025. Construit cu ❤️ și Rust.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

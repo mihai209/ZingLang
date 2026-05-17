@@ -1,26 +1,36 @@
 {
   "packages": {
     "zing-json": {
+      "latest": "1.0.0",
+      "description": "Pachet oficial pentru parsarea si serializarea datelor JSON.",
       "versions": {
         "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-json-1.0.0.tar.gz"
       }
     },
     "zing-crypto": {
+      "latest": "1.0.0",
+      "description": "Pachet oficial pentru hashing si securizarea parolelor (Argon2-style).",
       "versions": {
         "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-crypto-1.0.0.tar.gz"
       }
     },
     "zing-colors": {
+      "latest": "1.0.0",
+      "description": "Pachet oficial pentru culori ANSI in terminal (Ghostty/Linux).",
       "versions": {
         "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-colors-1.0.0.tar.gz"
       }
     },
     "zing-logs": {
+      "latest": "1.0.0",
+      "description": "Pachet oficial pentru loguri colorate in terminal.",
       "versions": {
         "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-logs-1.0.0.tar.gz"
       }
     },
     "zing-http": {
+      "latest": "1.0.0",
+      "description": "Pachet oficial pentru cereri HTTP.",
       "versions": {
         "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-http-1.0.0.tar.gz"
       }
