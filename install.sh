@@ -15,6 +15,25 @@ ok()    { printf "  ${GREEN}✓${RESET} %s\n" "$*"; }
 warn()  { printf "  ${YELLOW}⚠${RESET} %s\n" "$*"; }
 err()   { printf "  ${RED}✗${RESET} %s\n" "$*"; }
 
+spinner() {
+  local pid=$1 msg=$2
+  local chars='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+  while kill -0 "$pid" 2>/dev/null; do
+    for (( i=0; i<${#chars}; i++ )); do
+      printf "\r  ${CYAN}%s${RESET} %s" "${chars:$i:1}" "$msg"
+      sleep 0.1
+    done
+  done
+  wait "$pid"
+  local rc=$?
+  if [ $rc -eq 0 ]; then
+    printf "\r  ${GREEN}✓${RESET} %s  \n" "$msg"
+  else
+    printf "\r  ${RED}✗${RESET} %s  \n" "$msg"
+  fi
+  return $rc
+}
+
 BIN_DIR="$HOME/.local/bin"
 ZING_BIN="$BIN_DIR/zinglang"
 ZPM_BIN="$BIN_DIR/zpm"
@@ -93,8 +112,10 @@ install() {
 
   # 3. Download zinglang binary
   info "Detectat: ${os} ${arch}"
-  info "Descărcare: ${url}"
-  if ! curl -fsSL "$url" -o "$ZING_BIN"; then
+  (
+    curl -fsSL "$url" -o "$ZING_BIN" 2>/dev/null
+  ) &
+  if ! spinner $! "Descărcare ${asset}"; then
     err "Eșec la descărcarea '${asset}'. Verifică conexiunea și URL-ul."
     exit 1
   fi
@@ -102,11 +123,11 @@ install() {
   ok "Instalat: ${ZING_BIN}"
 
   # 4. Install zpm via zinglang --install-tools
-  info "Se instalează zpm..."
-  if ! "$ZING_BIN" --install-tools; then
+  (
+    "$ZING_BIN" --install-tools >/dev/null 2>&1
+  ) &
+  if ! spinner $! "Se instalează zpm..."; then
     warn "zpm nu a putut fi instalat. Rulează 'zinglang --install-tools' manual."
-  else
-    ok "zpm instalat cu succes."
   fi
 
   # 5. Check PATH
