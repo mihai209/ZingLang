@@ -16,10 +16,11 @@ warn()  { printf "  ${YELLOW}⚠${RESET} %s\n" "$*"; }
 err()   { printf "  ${RED}✗${RESET} %s\n" "$*"; }
 
 BIN_DIR="$HOME/.local/bin"
-ZING_BIN="$BIN_DIR/zing"
+ZING_BIN="$BIN_DIR/zinglang"
 ZPM_BIN="$BIN_DIR/zpm"
 CACHE_DIR="$HOME/.zing_modules"
-BASE_URL="https://mihai209.github.io/ZingLang/bin"
+RELEASE_TAG="v1.0"
+BASE_URL="https://github.com/mihai209/ZingLang/releases/download/$RELEASE_TAG"
 
 # ── Uninstall ──────────────────────────────────────────────────────────
 
@@ -58,7 +59,31 @@ install() {
   info "Începe instalarea ZingLang..."
   echo ""
 
-  # 1. Create ~/.local/bin if missing
+  # 1. Detect platform
+  local arch=""
+  case "$(uname -m)" in
+    x86_64|amd64) arch="x86_64" ;;
+    aarch64|arm64) arch="aarch64" ;;
+    *)
+      err "Arhitectură nesuportată: $(uname -m)"
+      exit 1
+      ;;
+  esac
+
+  local os=""
+  case "$(uname -s)" in
+    Linux)  os="linux" ;;
+    Darwin) os="macos" ;;
+    *)
+      err "Sistem de operare nesuportat: $(uname -s)"
+      exit 1
+      ;;
+  esac
+
+  local asset="zinglang-${os}-${arch}"
+  local url="$BASE_URL/$asset"
+
+  # 2. Create ~/.local/bin if missing
   if [ ! -d "$BIN_DIR" ]; then
     mkdir -p "$BIN_DIR"
     ok "Creat: $BIN_DIR"
@@ -66,20 +91,25 @@ install() {
     info "Există deja: $BIN_DIR"
   fi
 
-  # 2. Download binaries
-  for bin in zing zpm; do
-    local url="$BASE_URL/$bin"
-    local dest="$BIN_DIR/$bin"
-    info "Descărcare: $url"
-    if ! curl -fsSL "$url" -o "$dest"; then
-      err "Eșec la descărcarea '$bin'. Verifică conexiunea și URL-ul."
-      exit 1
-    fi
-    chmod +x "$dest"
-    ok "Instalat: $dest"
-  done
+  # 3. Download zinglang binary
+  info "Detectat: ${os} ${arch}"
+  info "Descărcare: ${url}"
+  if ! curl -fsSL "$url" -o "$ZING_BIN"; then
+    err "Eșec la descărcarea '${asset}'. Verifică conexiunea și URL-ul."
+    exit 1
+  fi
+  chmod +x "$ZING_BIN"
+  ok "Instalat: ${ZING_BIN}"
 
-  # 3. Check PATH
+  # 4. Install zpm via zinglang --install-tools
+  info "Se instalează zpm..."
+  if ! "$ZING_BIN" --install-tools; then
+    warn "zpm nu a putut fi instalat. Rulează 'zinglang --install-tools' manual."
+  else
+    ok "zpm instalat cu succes."
+  fi
+
+  # 5. Check PATH
   case ":$PATH:" in
     *":$BIN_DIR:"*) ;;
     *)
@@ -92,8 +122,8 @@ install() {
   esac
 
   echo ""
-  printf "  ${GREEN}${BOLD}✓ ZingLang și zpm au fost instalate global!${RESET}\n"
-  printf "  Rulează ${CYAN}zpm install${RESET} într-un proiect ZingLang.\n"
+  printf "  ${GREEN}${BOLD}✓ ZingLang a fost instalat global!${RESET}\n"
+  printf "  Rulează ${CYAN}zinglang${RESET} pentru a începe.\n"
   echo ""
 }
 
