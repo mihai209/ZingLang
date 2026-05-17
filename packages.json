@@ -2,27 +2,27 @@
   "packages": {
     "zing-json": {
       "versions": {
-        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-json/1.0.0.tar.gz"
+        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-json-1.0.0.tar.gz"
       }
     },
     "zing-crypto": {
       "versions": {
-        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-crypto/1.0.0.tar.gz"
+        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-crypto-1.0.0.tar.gz"
       }
     },
     "zing-colors": {
       "versions": {
-        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-colors/1.0.0.tar.gz"
+        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-colors-1.0.0.tar.gz"
       }
     },
     "zing-logs": {
       "versions": {
-        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-logs/1.0.0.tar.gz"
+        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-logs-1.0.0.tar.gz"
       }
     },
     "zing-http": {
       "versions": {
-        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-http/1.0.0.tar.gz"
+        "1.0.0": "https://mihai209.github.io/ZingLang/pachete/zing-http-1.0.0.tar.gz"
       }
     }
   }
