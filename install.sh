@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/sh
+set -eu
 
 # ── ZingLang Installer / Uninstaller ──────────────────────────────────
 #   Usage:
@@ -16,16 +16,21 @@ warn()  { printf "  ${YELLOW}⚠${RESET} %s\n" "$*"; }
 err()   { printf "  ${RED}✗${RESET} %s\n" "$*"; }
 
 spinner() {
-  local pid=$1 msg=$2
-  local chars='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+  pid=$1 msg=$2
+  i=0
   while kill -0 "$pid" 2>/dev/null; do
-    for (( i=0; i<${#chars}; i++ )); do
-      printf "\r  ${CYAN}%s${RESET} %s" "${chars:$i:1}" "$msg"
-      sleep 0.1
-    done
+    i=$((i + 1))
+    case $((i % 4)) in
+      0) s='|' ;;
+      1) s='/' ;;
+      2) s='-' ;;
+      3) s='\' ;;
+    esac
+    printf "\r  ${CYAN}%s${RESET} %s" "$s" "$msg"
+    sleep 0.1
   done
   wait "$pid"
-  local rc=$?
+  rc=$?
   if [ $rc -eq 0 ]; then
     printf "\r  ${GREEN}✓${RESET} %s  \n" "$msg"
   else
