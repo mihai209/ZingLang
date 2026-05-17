@@ -1,4 +1,4 @@
-/* ─── Particles Canvas ─────────────────────────────────────────────── */
+/* ── Particles Canvas ─────────────────────────────────────────────── */
 
 (function initParticles() {
   const c = document.getElementById('particles');
@@ -7,7 +7,7 @@
   let w, h, particles = [];
 
   function resize() { w = c.width = innerWidth; h = c.height = innerHeight; }
-  resize(); addEventListener('resize', resize);
+  resize(); window.addEventListener('resize', resize);
 
   for (let i = 0; i < 80; i++) {
     particles.push({
@@ -26,17 +26,18 @@
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(138,43,226,.35)'; ctx.fill();
     }
-    // lines
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
         const dy = particles[i].y - particles[j].y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 180) {
-          ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
           ctx.strokeStyle = `rgba(138,43,226,${1 - dist / 180})`;
-          ctx.lineWidth = .5; ctx.stroke();
+          ctx.lineWidth = .5;
+          ctx.stroke();
         }
       }
     }
@@ -45,53 +46,69 @@
   draw();
 })();
 
-/* ─── Code Tabs ────────────────────────────────────────────────────── */
+/* ── Code Tabs ────────────────────────────────────────────────────── */
+
+function highlightZing(src) {
+  return src
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/(\/\/.*)/g, '<span class="cm">$1</span>')
+    .replace(/\b(import|let)\b/g, '<span class="kw">$1</span>')
+    .replace(/\b(print)\b/g, '<span class="fn">$1</span>')
+    .replace(/\b(?:json|crypto)\b/g, '<span class="mod">$&</span>')
+    .replace(/"([^"]*)"/g, '<span class="str">"$1"</span>')
+    .replace(/\b(\d+)\b/g, '<span class="int">$1</span>');
+}
 
 const CODE_SAMPLES = [
   {
     file: 'hello.zing',
-    code:
-`<span class="cm">// Primul tau program ZingLang</span>
-<span class="kw">let</span> nume = <span class="str">"ZingLang"</span>;
-<span class="kw">let</span> versiune = <span class="str">"1.0.0"</span>;
+    code: highlightZing(
+`// Primul tau program ZingLang
+let nume = "ZingLang";
+let versiune = "1.0.0";
 
-<span class="fn">print</span>(<span class="str">"Salut, "</span>, nume);
-<span class="fn">print</span>(<span class="str">"Versiune: "</span>, versiune);
+print("Salut, ", nume);
+print("Versiune: ", versiune);
 
-<span class="kw">let</span> x = <span class="int">10</span>;
-<span class="fn">print</span>(x + <span class="int">5</span>);  <span class="cm">// → 15</span>`
+let x = 10;
+print(x + 5);  // → 15`)
   },
   {
     file: 'json.zing',
-    code:
-`<span class="kw">import</span> <span class="str">"json"</span>;
+    code: highlightZing(
+`import "json";
 
-<span class="kw">let</span> text = <span class="str">'{"user": "Mihai", "pass": "secret123"}'</span>;
+let text = '{"user": "Mihai", "pass": "secret123"}';
 
-<span class="kw">let</span> data = <span class="mod">json</span>.<span class="fn">parse</span>(text);
-<span class="fn">print</span>(<span class="str">"Utilizator:"</span>, data.user);
-<span class="fn">print</span>(<span class="str">"Parola:"</span>, data.pass);`
+let data = json.parse(text);
+print("Utilizator:", data.user);
+print("Parola:", data.pass);`)
   },
   {
     file: 'crypto.zing',
-    code:
-`<span class="kw">import</span> <span class="str">"crypto"</span>;
+    code: highlightZing(
+`import "crypto";
 
-<span class="kw">let</span> parola = <span class="str">"parola_mea_secreta"</span>;
-<span class="kw">let</span> hash = <span class="mod">crypto</span>.<span class="fn">hash_password</span>(parola);
-<span class="fn">print</span>(<span class="str">"Hash generat:"</span>, hash);
+let parola = "parola_mea_secreta";
+let hash = crypto.hash_password(parola);
+print("Hash generat:", hash);
 
-<span class="kw">let</span> ok = <span class="mod">crypto</span>.<span class="fn">verify_password</span>(parola, hash);
-<span class="fn">print</span>(<span class="str">"Parola corecta?"</span>, ok); <span class="cm">// → true</span>`
+let ok = crypto.verify_password(parola, hash);
+print("Parola corecta?", ok); // → true`)
   }
 ];
 
 function switchTab(index) {
   const tabs = document.querySelectorAll('.tab');
   tabs.forEach((t, i) => t.classList.toggle('active', i === index));
-  const sample = CODE_SAMPLES[index];
-  document.getElementById('editor-code').innerHTML = sample.code;
-  document.getElementById('editor-filename').textContent = sample.file;
+  const el = document.getElementById('editor-code');
+  const fn = document.getElementById('editor-filename');
+  if (el && CODE_SAMPLES[index]) {
+    el.innerHTML = CODE_SAMPLES[index].code;
+    if (fn) fn.textContent = CODE_SAMPLES[index].file;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -102,70 +119,63 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-/* ─── Copy Install Command ─────────────────────────────────────────── */
+/* ── Copy Install Command ─────────────────────────────────────────── */
 
 function copyInstall() {
   const btn = document.querySelector('.copy-btn');
-  const cmd = document.querySelector('.install-cmd');
+  const cmd = document.getElementById('install-cmd');
   if (!btn || !cmd) return;
   navigator.clipboard.writeText(cmd.textContent.trim()).then(() => {
-    btn.textContent = 'Copiat!';
+    btn.innerHTML = '<i class="bi bi-check-lg mr-1"></i>Copiat!';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copiază'; btn.classList.remove('copied'); }, 2000);
+    setTimeout(() => {
+      btn.innerHTML = '<i class="bi bi-clipboard mr-1"></i>Copiaz\u0103';
+      btn.classList.remove('copied');
+    }, 2000);
   }).catch(() => {});
 }
 
-/* ─── Package Registry Explorer ────────────────────────────────────── */
+/* ── Package Registry Explorer ────────────────────────────────────── */
 
 const REGISTRY_URL = 'packages.json';
 
 async function loadPackages() {
   const grid = document.getElementById('package-grid');
   if (!grid) return;
-
   try {
     const resp = await fetch(REGISTRY_URL);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const data = await resp.json();
     const entries = Object.entries(data.packages || {});
-
     if (!entries.length) {
-      grid.innerHTML = '<div class="loading">Nu s-au găsit pachete.</div>';
+      grid.innerHTML = '<div class="loading text-center py-16 text-[#8b8b9e]"><i class="bi bi-inbox mr-2"></i>Nu s-au g\u0103sit pachete.</div>';
       return;
     }
-
-    grid.innerHTML = entries
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([name, info]) => {
-        const version = info.latest || (info.versions ? Object.keys(info.versions).sort().pop() : '?');
-        const desc = info.description || '';
-        return `
-          <div class="pkg-card">
-            <div class="pkg-header">
-              <span class="pkg-name">${esc(name)}</span>
-              <span class="pkg-version">v${esc(version)}</span>
-            </div>
-            <div class="pkg-desc">${esc(desc)}</div>
-            <code class="pkg-install" data-cmd="zpm install ${esc(name)}">zpm install ${esc(name)}</code>
-          </div>
-        `;
-      })
-      .join('');
-
-    // Per-card copy
+    grid.innerHTML = entries.sort(([a], [b]) => a.localeCompare(b)).map(([name, info]) => {
+      const version = info.latest || (info.versions ? Object.keys(info.versions).sort().pop() : '?');
+      const desc = info.description || '';
+      return '<div class="pkg-card">'
+        + '<div class="flex items-baseline gap-3 mb-2">'
+        + '<span class="font-mono font-bold text-lg text-[#8a2be2]">' + esc(name) + '</span>'
+        + '<span class="font-mono text-xs text-[#8b8b9e] bg-white/5 px-2.5 py-0.5 rounded-md border border-white/10">v' + esc(version) + '</span>'
+        + '</div>'
+        + '<div class="text-[#8b8b9e] text-sm mb-4">' + esc(desc) + '</div>'
+        + '<code class="pkg-install inline-block bg-white/5 px-4 py-1.5 rounded-lg font-mono text-xs text-[#00ff66] cursor-pointer transition-colors hover:bg-white/10" data-cmd="zpm install ' + esc(name) + '">'
+        + '<i class="bi bi-terminal mr-1.5"></i>zpm install ' + esc(name)
+        + '</code>'
+        + '</div>';
+    }).join('');
     document.querySelectorAll('.pkg-install').forEach(el => {
-      el.addEventListener('click', () => {
-        const cmd = el.dataset.cmd;
-        navigator.clipboard.writeText(cmd).then(() => {
-          const orig = el.textContent;
-          el.textContent = '✓ Copiat!';
-          setTimeout(() => { el.textContent = orig; }, 1500);
+      el.addEventListener('click', function () {
+        navigator.clipboard.writeText(this.dataset.cmd).then(() => {
+          const orig = this.innerHTML;
+          this.innerHTML = '<i class="bi bi-check-lg mr-1.5"></i>Copiat!';
+          setTimeout(() => { this.innerHTML = orig; }, 1500);
         }).catch(() => {});
       });
     });
-
   } catch (err) {
-    grid.innerHTML = `<div class="loading">Eroare la încărcarea pachetelor: ${esc(err.message)}</div>`;
+    grid.innerHTML = '<div class="loading text-center py-16 text-[#8b8b9e]"><i class="bi bi-exclamation-triangle mr-2"></i>Eroare la \u00eenc\u0103rcarea pachetelor: ' + esc(err.message) + '</div>';
   }
 }
 
